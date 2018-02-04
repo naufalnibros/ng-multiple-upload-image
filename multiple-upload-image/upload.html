@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html ng-app="app" flow-init>
+  <head>
+    <meta charset="utf-8">
+    <title>Membuat multiple upload image</title>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/ng-flow/dist/ng-flow-standalone.min.js"></script>
+    <script src="../bower_components/ng-flow/dist/ng-flow.min.js"></script>
+    <script src="../bower_components/flow.js/dist/flow.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+      img.img.img-thumbnail {
+        height: 150px !important;
+      }
+    </style>
+  </head>
+
+  <body>
+  <div class="container">
+    <h1>Multiple Upload Image</h1>
+    <hr/>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <h2>Inputs:</h2>
+          <input class="form-control" type="file" flow-btn/>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <p>
+      <a class="btn btn-small btn-info" ng-click="$flow.cancel()">Reset Upload</a>
+    </p>
+    <hr/>
+  </div>
+
+  <!-- Images  -->
+  <div flow-transfers class="col-md-12 col-sm-12">
+    <div ng-repeat="file in transfers" class="col-md-3 col-sm-3">
+      <div ng-show="$flow.files.length">
+        <img class="img img-thumbnail" flow-img="file" />
+      </div>
+      <div class="clearfix"></div>
+        <a class="btn btn-danger btn-block" ng-click="file.cancel()">
+          Cancel
+        </a>
+      <div class="clear"></div>
+    </div>
+  </div>
+
+</body>
+    <script type="text/javascript">
+    /*global angular */
+    'use strict';
+
+    /**
+    * The main app module
+    * @name app
+    * @type {angular.Module}
+    */
+    var app = angular.module('app', ['flow'])
+    .config(['flowFactoryProvider', function (flowFactoryProvider) {
+      flowFactoryProvider.defaults = {
+        target: 'upload.php',
+        permanentErrors: [404, 500, 501],
+        maxChunkRetries: 1,
+        chunkRetryInterval: 5000,
+        simultaneousUploads: 4
+      };
+      flowFactoryProvider.on('catchAll', function (event) {
+        console.log('catchAll', arguments);
+      });
+      // Can be used with different implementations of Flow.js
+      // flowFactoryProvider.factory = fustyFlowFactory;
+    }]);
+    </script>
+
+</html>

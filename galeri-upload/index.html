@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html ng-app="app" flow-init
+      flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
+      flow-files-submitted="$flow.upload()">
+<head>
+  <title>Image</title>
+  <script src="../bower_components/angular/angular.min.js"></script>
+  <script src="../bower_components/ng-flow/dist/ng-flow-standalone.min.js"></script>
+  <script src="../bower_components/ng-flow/dist/ng-flow.min.js"></script>
+  <script src="../bower_components/flow.js/dist/flow.min.js"></script>
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css">
+
+  <style>
+    .thumbnail {
+      max-width: 200px; max-height: 150px; line-height: 20px; margin-bottom: 5px;
+    }
+  </style>
+
+</head>
+<body>
+
+  <div class="container">
+    <h3><a name="gallery-example" class="anchor" href="#gallery-example"><span class="octicon octicon-link"></span></a>Gallery upload</h3>
+    <div flow-init flow-files-submitted="$flow.upload()" flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]">
+    <div class="drop" flow-drop ng-class="dropClass">
+      <span class="btn btn-default" flow-btn>Upload Image</span>
+      <span class="btn btn-default" flow-btn flow-directory ng-show="$flow.supportDirectory">Upload Folder of Images</span>
+      <b>OR</b>
+      Drag And Drop your images here
+    </div>
+    <br/>
+
+    <div>
+      <div ng-repeat="file in $flow.files" class="gallery-box">
+        <span class="title">{{file.name}}</span>
+        <div class="thumbnail" ng-show="$flow.files.length">
+          <img flow-img="file" />
+        </div>
+        <div class="progress progress-striped" ng-class="{active: file.isUploading()}">
+          <div class="progress-bar" role="progressbar"
+          aria-valuenow="{{file.progress() * 100}}"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          ng-style="{width: (file.progress() * 100) + '%'}">
+          <span class="sr-only">{{file.progress()}}% Complete</span>
+          </div>
+        </div>
+        <div class="btn-group">
+          <a class="btn btn-xs btn-danger" ng-click="file.cancel()">
+            Remove
+          </a>
+        </div>
+      </div>
+    <div class="clearfix"></div>
+      </div>
+
+    </div>
+    </div>
+
+<script type="text/javascript">
+  /*global angular */
+  'use strict';
+
+  /**
+  * The main app module
+  * @name app
+  * @type {angular.Module}
+  */
+  var app = angular.module('app', ['flow'])
+  .config(['flowFactoryProvider', function (flowFactoryProvider) {
+    flowFactoryProvider.defaults = {
+      target: 'upload.php',
+      permanentErrors: [404, 500, 501],
+      maxChunkRetries: 1,
+      chunkRetryInterval: 5000,
+      simultaneousUploads: 4,
+      singleFile: true
+    };
+    flowFactoryProvider.on('catchAll', function (event) {
+      console.log('catchAll', arguments);
+    });
+    // Can be used with different implementations of Flow.js
+    // flowFactoryProvider.factory = fustyFlowFactory;
+  }]);
+</script>
+</body>
+</html>

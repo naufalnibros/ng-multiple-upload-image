@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html ng-app="app" flow-init
+      flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
+      flow-files-submitted="$flow.upload()">
+<head>
+  <title>Image</title>
+  <script src="../bower_components/angular/angular.min.js"></script>
+  <script src="../bower_components/ng-flow/dist/ng-flow-standalone.min.js"></script>
+  <script src="../bower_components/ng-flow/dist/ng-flow.min.js"></script>
+  <script src="../bower_components/flow.js/dist/flow.min.js"></script>
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css">
+
+  <style>
+    .thumbnail {
+      max-width: 200px; max-height: 150px; line-height: 20px; margin-bottom: 5px;
+    }
+  </style>
+
+</head>
+<body>
+
+  <div class="container">
+    <h1>flow image example</h1>
+    <hr class="soften"/>
+
+    <div>
+      <div class="thumbnail" ng-hide="$flow.files.length">
+        <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" />
+      </div>
+      <div class="thumbnail" ng-show="$flow.files.length">
+        <img flow-img="$flow.files[0]" />
+      </div>
+      <div class="clearfix">
+
+      </div>
+      <div>
+        <a href="#" class="btn" ng-hide="$flow.files.length" flow-btn flow-attrs="{accept:'image/*'}">Select image</a>
+        <a href="#" class="btn" ng-show="$flow.files.length" flow-btn flow-attrs="{accept:'image/*'}">Change</a>
+        <a href="#" class="btn btn-danger" ng-show="$flow.files.length"
+        ng-click="$flow.cancel()">
+        Remove
+      </a>
+    </div>
+    <p>
+      Only PNG,GIF,JPG files allowed.
+    </p>
+  </div>
+</div>
+<script type="text/javascript">
+  /*global angular */
+  'use strict';
+
+  /**
+  * The main app module
+  * @name app
+  * @type {angular.Module}
+  */
+  var app = angular.module('app', ['flow'])
+  .config(['flowFactoryProvider', function (flowFactoryProvider) {
+    flowFactoryProvider.defaults = {
+      target: 'upload.php',
+      permanentErrors: [404, 500, 501],
+      maxChunkRetries: 1,
+      chunkRetryInterval: 5000,
+      simultaneousUploads: 4,
+      singleFile: true
+    };
+    flowFactoryProvider.on('catchAll', function (event) {
+      console.log('catchAll', arguments);
+    });
+    // Can be used with different implementations of Flow.js
+    // flowFactoryProvider.factory = fustyFlowFactory;
+  }]);
+</script>
+</body>
+</html>
